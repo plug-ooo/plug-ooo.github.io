@@ -3,240 +3,176 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Force light colour-scheme so the whiteboard is ALWAYS white, even when
-       the operating system is in dark mode. -->
-  <meta name="color-scheme" content="light" />
-  <title>medic8d · GitHub Pages</title>
+  <title>medic8d · Blackboard</title>
 
-  <!-- vendor libraries (self-hosted for reliability) -->
+  <!-- vendor libraries (self-hosted) -->
   <link rel="stylesheet" href="vendor/highlight-github.min.css" />
   <script src="vendor/marked.min.js"></script>
   <script src="vendor/highlight.min.js"></script>
   <script src="vendor/html2canvas.min.js"></script>
 
   <style>
-    /* ─────────────────────────────────────────────
-       RESET & BASE  (always light, never inherits OS dark-mode)
-    ───────────────────────────────────────────── */
+    /* ── RESET ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* ── NEON PALETTE ── */
     :root {
-      color-scheme: light;
-      --white:       #ffffff;
-      --bg:          #f6f8fa;
-      --border:      #d0d7de;
-      --text:        #24292f;
-      --muted:       #656d76;
-      --link:        #0969da;
-      --green:       #1a7f37;
-      --purple:      #8250df;
-      --accent:      #0969da;
-      --note-yellow: #fffbe6;
-      --note-blue:   #e8f4fd;
-      --note-green:  #e6f9ed;
-      --note-pink:   #fde8f2;
-      --note-purple: #f0e8fd;
-      --note-orange: #fff3e0;
-      --radius:      6px;
-      --shadow:      0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.08);
-      --shadow-lg:   0 4px 16px rgba(0,0,0,.16);
+      --bg:            #0a0a0a;
+      --board-bg:      #0f1f14;
+      --board-border:  #1e3d28;
+      --board-radius:  22px;
+      --board-glow:    0 0 60px rgba(57,255,20,.08), 0 0 120px rgba(57,255,20,.04);
+
+      --toolbar-bg:    #111111;
+      --toolbar-border:#1e1e1e;
+
+      --neon-green:  #39ff14;
+      --neon-cyan:   #00f5ff;
+      --neon-pink:   #ff2d78;
+      --neon-yellow: #ffe600;
+      --neon-purple: #c300ff;
+      --neon-orange: #ff6a00;
+
+      --text-dim:    rgba(255,255,255,.35);
+      --text-muted:  rgba(255,255,255,.55);
+      --border-dim:  rgba(255,255,255,.08);
+      --radius:      10px;
     }
 
     html, body {
+      height: 100%;
       background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
-                   Arial, sans-serif;
-      font-size: 16px;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      font-size: 15px;
       line-height: 1.5;
+      overflow: hidden;
     }
 
-    a { color: var(--link); text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    /* ── LAYOUT SHELL ── */
+    body {
+      display: flex;
+      flex-direction: column;
+    }
 
-    /* ─────────────────────────────────────────────
-       TOP TOOLBAR
-    ───────────────────────────────────────────── */
+    /* ── TOOLBAR ── */
     #toolbar {
-      position: sticky;
-      top: 0;
-      z-index: 500;
-      background: var(--white);
-      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 16px;
+      padding: 7px 14px;
+      background: var(--toolbar-bg);
+      border-bottom: 1px solid var(--toolbar-border);
       flex-wrap: wrap;
+      z-index: 500;
     }
-    #toolbar .logo {
-      font-weight: 700;
-      font-size: 1rem;
-      color: var(--text);
-      margin-right: 8px;
+
+    .logo {
+      font-weight: 800;
+      font-size: .95rem;
+      letter-spacing: .06em;
+      color: var(--neon-green);
+      text-shadow: 0 0 12px var(--neon-green);
+      margin-right: 6px;
+      white-space: nowrap;
     }
+
+    .tb-sep { width: 1px; height: 22px; background: var(--toolbar-border); margin: 0 3px; }
+
     .tb-btn {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      padding: 5px 10px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--white);
-      color: var(--text);
-      font-size: .8rem;
+      padding: 4px 10px;
+      border: 1px solid var(--border-dim);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: .75rem;
       cursor: pointer;
-      transition: background .15s;
+      transition: color .15s, border-color .15s, text-shadow .15s;
       white-space: nowrap;
     }
-    .tb-btn:hover { background: var(--bg); }
-    .tb-btn.danger:hover { background: #ffebe9; border-color: #ff818266; color: #cf222e; }
-    .tb-sep { width: 1px; height: 24px; background: var(--border); margin: 0 4px; }
+    .tb-btn:hover {
+      color: var(--neon-green);
+      border-color: var(--neon-green);
+      text-shadow: 0 0 8px var(--neon-green);
+    }
+    .tb-btn.danger:hover {
+      color: var(--neon-pink);
+      border-color: var(--neon-pink);
+      text-shadow: 0 0 8px var(--neon-pink);
+    }
 
-    /* colour swatches for note colour picker */
+    /* colour swatches */
     .swatch-row { display: flex; gap: 4px; align-items: center; }
     .swatch {
-      width: 18px; height: 18px; border-radius: 50%;
+      width: 16px; height: 16px; border-radius: 50%;
       border: 2px solid transparent;
       cursor: pointer;
-      transition: transform .1s;
+      transition: transform .1s, box-shadow .1s;
     }
-    .swatch:hover, .swatch.active { transform: scale(1.25); border-color: var(--text); }
+    .swatch:hover, .swatch.active {
+      transform: scale(1.3);
+      box-shadow: 0 0 8px currentColor;
+    }
 
+    /* search */
     #search-box {
       padding: 4px 8px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      font-size: .8rem;
-      width: 160px;
-      background: var(--white);
-      color: var(--text);
+      border: 1px solid var(--border-dim);
+      border-radius: 8px;
+      font-size: .75rem;
+      width: 150px;
+      background: transparent;
+      color: #fff;
+      outline: none;
+      transition: border-color .15s;
+    }
+    #search-box:focus { border-color: var(--neon-cyan); }
+    #search-box::placeholder { color: var(--text-dim); }
+
+    #zoom-label {
+      font-size: .75rem;
+      color: var(--text-muted);
+      min-width: 38px;
+      text-align: center;
     }
 
-    /* zoom display */
-    #zoom-label { font-size: .8rem; color: var(--muted); min-width: 42px; text-align: center; }
-
-    /* ─────────────────────────────────────────────
-       PROFILE CARD  (README.md style)
-    ───────────────────────────────────────────── */
-    #profile {
-      max-width: 860px;
-      margin: 24px auto;
-      padding: 0 16px;
-    }
-
-    .readme-card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px 28px;
-    }
-
-    .readme-card h1 { font-size: 1.9rem; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 16px; }
-    .readme-card h2 { font-size: 1.3rem; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin: 20px 0 12px; }
-    .readme-card h3 { font-size: 1.1rem; margin: 16px 0 8px; }
-    .readme-card p  { margin-bottom: 12px; color: var(--text); }
-    .readme-card ul { padding-left: 24px; margin-bottom: 12px; }
-    .readme-card li { margin-bottom: 4px; }
-
-    .profile-header {
+    /* ── BOARD WRAPPER ── */
+    #board-wrap {
+      flex: 1;
       display: flex;
-      gap: 20px;
-      align-items: flex-start;
-      margin-bottom: 20px;
-    }
-    .profile-header img {
-      width: 80px; height: 80px;
-      border-radius: 50%;
-      border: 2px solid var(--border);
-    }
-    .profile-header .bio h1 { border: none; padding: 0; margin: 0 0 4px; font-size: 1.5rem; }
-    .profile-header .bio .handle { color: var(--muted); font-size: .95rem; margin-bottom: 6px; }
-
-    /* badge row */
-    .badge-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-    .badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: 20px; padding: 3px 10px;
-      font-size: .78rem; color: var(--text);
-    }
-    .badge .dot { width: 8px; height: 8px; border-radius: 50%; }
-
-    /* skills grid */
-    .skills-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-    .skill-tag {
-      background: #ddf4ff; border: 1px solid #54aeff66;
-      border-radius: 20px; padding: 2px 10px;
-      font-size: .78rem; color: #0969da;
-    }
-
-    /* stats images */
-    .stats-row { display: flex; flex-wrap: wrap; gap: 10px; }
-    .stats-row img { border-radius: var(--radius); max-width: 100%; height: auto; }
-
-    /* social links */
-    .social-links { display: flex; flex-wrap: wrap; gap: 8px; }
-    .social-link {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 4px 12px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      font-size: .82rem; color: var(--text);
-      background: var(--white);
-    }
-    .social-link:hover { background: var(--bg); text-decoration: none; }
-    .social-link svg { width: 16px; height: 16px; fill: currentColor; }
-
-    /* ─────────────────────────────────────────────
-       WHITEBOARD SECTION
-    ───────────────────────────────────────────── */
-    #whiteboard-section {
-      max-width: 860px;
-      margin: 0 auto 40px;
-      padding: 0 16px;
-    }
-
-    .section-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-    .section-header h2 {
-      font-size: 1rem;
-      color: var(--muted);
-      font-weight: 600;
-      letter-spacing: .02em;
-    }
-    .section-header .line { flex: 1; height: 1px; background: var(--border); }
-
-    /* outer scroll container */
-    #wb-outer {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
+      align-items: stretch;
+      padding: 18px;
       overflow: hidden;
-      position: relative;
-      background: var(--bg);
     }
 
-    /* zoom/pan viewport */
+    #wb-outer {
+      flex: 1;
+      border: 2px solid var(--board-border);
+      border-radius: var(--board-radius);
+      box-shadow: var(--board-glow), inset 0 0 80px rgba(0,0,0,.6);
+      overflow: hidden;
+      background: var(--board-bg);
+      position: relative;
+    }
+
     #wb-viewport {
       overflow: auto;
       width: 100%;
-      height: 560px;
+      height: 100%;
       cursor: default;
     }
 
-    /* the actual canvas that users place notes on */
+    /* The actual canvas */
     #whiteboard {
-      /* ALWAYS white — forces light background even in OS dark mode */
-      background-color: #ffffff !important;
-      color-scheme: light;
+      background-color: var(--board-bg);
+      /* Subtle chalk-dust dot pattern */
       background-image:
-        linear-gradient(rgba(0,0,0,.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,0,0,.04) 1px, transparent 1px);
-      background-size: 24px 24px;
+        radial-gradient(circle, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size: 30px 30px;
       width:  2400px;
       height: 1800px;
       position: relative;
@@ -246,103 +182,119 @@
       cursor: crosshair;
     }
 
-    /* hint overlay shown when board is empty */
+    /* Hint overlay */
     #wb-hint {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
-      color: #bac0c7;
       pointer-events: none;
     }
-    #wb-hint p { font-size: 1rem; margin-bottom: 6px; }
+    #wb-hint p {
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: rgba(57,255,20,.4);
+      text-shadow: 0 0 14px rgba(57,255,20,.5);
+      letter-spacing: .03em;
+    }
     #wb-hint kbd {
-      background: #f6f8fa; border: 1px solid #d0d7de;
-      border-radius: 4px; padding: 2px 6px; font-size: .75rem;
+      background: rgba(57,255,20,.06);
+      border: 1px solid rgba(57,255,20,.2);
+      border-radius: 5px;
+      padding: 2px 7px;
+      font-size: .75rem;
+      color: rgba(57,255,20,.55);
     }
 
-    /* ─────────────────────────────────────────────
-       NOTES
-    ───────────────────────────────────────────── */
+    /* ── NOTES ── */
     .note {
       position: absolute;
       min-width: 200px;
       min-height: 80px;
       width: 260px;
-      background: var(--note-yellow);
-      border: 1px solid rgba(0,0,0,.12);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
+      background: #0c1a0e;
+      border: 1.5px solid var(--neon-green);
+      border-radius: 12px;
+      box-shadow: 0 0 18px rgba(57,255,20,.18), inset 0 0 20px rgba(0,0,0,.3);
       display: flex;
       flex-direction: column;
       font-size: .85rem;
-      transition: box-shadow .15s;
-      /* prevent text selection while dragging */
+      transition: box-shadow .15s, border-color .15s;
       user-select: none;
+      color: var(--neon-green);
     }
+    /* per-colour note tints */
+    .note[data-color="yellow"] { border-color: var(--neon-yellow); box-shadow: 0 0 18px rgba(255,230,0,.18), inset 0 0 20px rgba(0,0,0,.3); color: var(--neon-yellow); background: #1a1700; }
+    .note[data-color="cyan"]   { border-color: var(--neon-cyan);   box-shadow: 0 0 18px rgba(0,245,255,.18), inset 0 0 20px rgba(0,0,0,.3); color: var(--neon-cyan);   background: #001a1f; }
+    .note[data-color="pink"]   { border-color: var(--neon-pink);   box-shadow: 0 0 18px rgba(255,45,120,.18), inset 0 0 20px rgba(0,0,0,.3); color: var(--neon-pink);   background: #1a0010; }
+    .note[data-color="purple"] { border-color: var(--neon-purple); box-shadow: 0 0 18px rgba(195,0,255,.18), inset 0 0 20px rgba(0,0,0,.3); color: var(--neon-purple); background: #120018; }
+    .note[data-color="orange"] { border-color: var(--neon-orange); box-shadow: 0 0 18px rgba(255,106,0,.18), inset 0 0 20px rgba(0,0,0,.3); color: var(--neon-orange); background: #1a0c00; }
+
     .note.selected {
-      box-shadow: var(--shadow-lg), 0 0 0 2px var(--accent);
+      box-shadow:
+        0 0 0 2px #fff,
+        0 0 28px currentColor,
+        inset 0 0 20px rgba(0,0,0,.3);
       z-index: 100 !important;
     }
-    .note.dimmed { opacity: .35; }
+    .note.dimmed { opacity: .25; }
 
     /* Note top bar */
     .note-bar {
       display: flex;
       align-items: center;
       gap: 4px;
-      padding: 4px 6px;
-      border-bottom: 1px solid rgba(0,0,0,.08);
+      padding: 5px 7px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
       cursor: grab;
-      border-radius: var(--radius) var(--radius) 0 0;
-      background: rgba(0,0,0,.04);
+      border-radius: 11px 11px 0 0;
+      background: rgba(0,0,0,.3);
     }
     .note-bar:active { cursor: grabbing; }
 
-    .note-bar .dot-btn {
-      width: 12px; height: 12px; border-radius: 50%;
+    .dot-btn {
+      width: 11px; height: 11px; border-radius: 50%;
       border: none; cursor: pointer; padding: 0;
-      transition: filter .15s;
+      transition: filter .15s, box-shadow .15s;
     }
     .dot-btn.close  { background: #ff5f57; }
     .dot-btn.color  { background: #28c840; }
-    .dot-btn:hover  { filter: brightness(.85); }
+    .dot-btn:hover  { filter: brightness(1.3); box-shadow: 0 0 6px currentColor; }
 
     .note-tag {
-      font-size: .65rem;
-      background: rgba(0,0,0,.08);
+      font-size: .6rem;
+      background: rgba(255,255,255,.07);
       border-radius: 10px;
       padding: 1px 6px;
-      color: var(--muted);
+      color: rgba(255,255,255,.4);
       cursor: pointer;
       margin-left: auto;
+      letter-spacing: .04em;
+      text-transform: uppercase;
     }
 
     /* Note body */
-    .note-body {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
+    .note-body { flex: 1; display: flex; flex-direction: column; }
 
-    /* Rendered markdown view */
+    /* Rendered markdown */
     .note-preview {
       padding: 8px 10px;
       flex: 1;
       overflow: auto;
       cursor: text;
-      /* markdown typography */
-      line-height: 1.6;
+      line-height: 1.65;
       user-select: text;
     }
-    .note-preview h1 { font-size: 1.2em; border-bottom: 1px solid rgba(0,0,0,.1); padding-bottom: 4px; margin-bottom: 6px; }
-    .note-preview h2 { font-size: 1.05em; margin-bottom: 4px; }
-    .note-preview h3 { font-size: .95em; }
+    /* inherit neon colour for all child text */
+    .note-preview * { color: inherit; }
+    .note-preview h1 { font-size: 1.15em; border-bottom: 1px solid rgba(255,255,255,.1); padding-bottom: 4px; margin-bottom: 6px; text-shadow: 0 0 10px currentColor; }
+    .note-preview h2 { font-size: 1em; margin-bottom: 4px; }
+    .note-preview h3 { font-size: .9em; }
     .note-preview p  { margin-bottom: 6px; }
     .note-preview ul, .note-preview ol { padding-left: 18px; margin-bottom: 6px; }
     .note-preview code {
-      background: rgba(0,0,0,.07);
+      background: rgba(255,255,255,.06);
       border-radius: 3px;
       padding: 1px 4px;
       font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
@@ -350,27 +302,26 @@
     }
     .note-preview pre code { background: none; padding: 0; }
     .note-preview pre {
-      background: rgba(0,0,0,.06);
-      border-radius: 4px;
+      background: rgba(0,0,0,.4);
+      border-radius: 5px;
       padding: 8px;
       overflow: auto;
       margin-bottom: 6px;
       font-size: .8em;
     }
     .note-preview blockquote {
-      border-left: 3px solid rgba(0,0,0,.15);
+      border-left: 3px solid rgba(255,255,255,.2);
       padding-left: 8px;
-      color: var(--muted);
+      opacity: .7;
       margin: 0 0 6px;
     }
-    .note-preview a { color: var(--link); }
+    .note-preview a { color: inherit; text-decoration: underline dotted; opacity: .8; }
     .note-preview table { border-collapse: collapse; margin-bottom: 6px; font-size: .8em; }
-    .note-preview th, .note-preview td { border: 1px solid rgba(0,0,0,.12); padding: 3px 8px; }
-    .note-preview th { background: rgba(0,0,0,.06); }
+    .note-preview th, .note-preview td { border: 1px solid rgba(255,255,255,.1); padding: 3px 8px; }
+    .note-preview th { background: rgba(255,255,255,.05); }
     .note-preview img { max-width: 100%; }
-    .note-preview input[type="checkbox"] { margin-right: 4px; }
 
-    /* Edit mode textarea */
+    /* Edit textarea */
     .note-editor {
       display: none;
       flex: 1;
@@ -381,84 +332,85 @@
       font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
       font-size: .8rem;
       resize: none;
-      color: var(--text);
-      line-height: 1.6;
+      color: inherit;
+      line-height: 1.65;
       min-height: 60px;
+      caret-color: #fff;
     }
+    .note-editor::placeholder { color: rgba(255,255,255,.2); }
 
-    /* resize handle */
+    /* Resize handle */
     .note-resize {
       position: absolute;
       bottom: 0; right: 0;
       width: 14px; height: 14px;
       cursor: se-resize;
-      background: linear-gradient(135deg, transparent 50%, rgba(0,0,0,.2) 50%);
-      border-radius: 0 0 var(--radius) 0;
+      background: linear-gradient(135deg, transparent 50%, rgba(255,255,255,.2) 50%);
+      border-radius: 0 0 11px 0;
     }
 
-    /* colour strip at bottom of note bar indicating colour */
-    .note-bar .color-strip {
-      flex: 1;
-      height: 4px;
-      border-radius: 2px;
-      margin-left: 4px;
-      background: transparent;
-    }
-
-    /* ─────────────────────────────────────────────
-       KEYBOARD SHORTCUTS MODAL
-    ───────────────────────────────────────────── */
+    /* ── SHORTCUTS MODAL ── */
     #shortcuts-modal {
       display: none;
       position: fixed; inset: 0; z-index: 1000;
-      background: rgba(0,0,0,.4);
+      background: rgba(0,0,0,.75);
       align-items: center;
       justify-content: center;
     }
     #shortcuts-modal.open { display: flex; }
     .modal-box {
-      background: var(--white);
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
+      background: #141414;
+      border-radius: 14px;
+      border: 1px solid var(--board-border);
+      box-shadow: 0 0 40px rgba(57,255,20,.12);
       padding: 24px 28px;
       min-width: 320px;
-      max-width: 480px;
-      box-shadow: var(--shadow-lg);
+      max-width: 460px;
     }
-    .modal-box h2 { font-size: 1rem; margin-bottom: 14px; }
+    .modal-box h2 {
+      font-size: 1rem;
+      margin-bottom: 14px;
+      color: var(--neon-green);
+      text-shadow: 0 0 10px var(--neon-green);
+    }
     .shortcut-row {
       display: flex; justify-content: space-between;
-      font-size: .82rem; padding: 4px 0;
-      border-bottom: 1px solid var(--border);
+      font-size: .82rem; padding: 5px 0;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      color: var(--text-muted);
     }
-    .shortcut-row:last-child { border: none; }
+    .shortcut-row:last-of-type { border: none; }
     .shortcut-row kbd {
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: 3px; padding: 1px 6px; font-size: .75rem;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 4px; padding: 1px 7px; font-size: .73rem;
+      color: #fff;
     }
     .modal-close {
       margin-top: 16px;
-      display: block;
-      width: 100%;
-      padding: 6px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--white);
+      display: block; width: 100%;
+      padding: 7px;
+      border: 1px solid var(--board-border);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text-muted);
       cursor: pointer;
       font-size: .85rem;
+      transition: color .15s, border-color .15s;
     }
-    .modal-close:hover { background: var(--bg); }
+    .modal-close:hover { color: var(--neon-green); border-color: var(--neon-green); }
 
-    /* ─────────────────────────────────────────────
-       TOAST NOTIFICATION
-    ───────────────────────────────────────────── */
+    /* ── TOAST ── */
     #toast {
       position: fixed;
       bottom: 24px; left: 50%;
       transform: translateX(-50%) translateY(60px);
-      background: #24292f;
-      color: #fff;
-      padding: 8px 16px;
+      background: #111;
+      border: 1px solid var(--neon-green);
+      color: var(--neon-green);
+      text-shadow: 0 0 8px var(--neon-green);
+      box-shadow: 0 0 20px rgba(57,255,20,.25);
+      padding: 8px 20px;
       border-radius: 20px;
       font-size: .82rem;
       pointer-events: none;
@@ -468,45 +420,37 @@
     }
     #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-    /* ─────────────────────────────────────────────
-       FOOTER
-    ───────────────────────────────────────────── */
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: .78rem;
-      color: var(--muted);
-      border-top: 1px solid var(--border);
-      margin-top: 20px;
-    }
+    /* ── SCROLLBAR STYLING ── */
+    #wb-viewport::-webkit-scrollbar { width: 6px; height: 6px; }
+    #wb-viewport::-webkit-scrollbar-track { background: transparent; }
+    #wb-viewport::-webkit-scrollbar-thumb { background: rgba(57,255,20,.2); border-radius: 3px; }
+    #wb-viewport::-webkit-scrollbar-thumb:hover { background: rgba(57,255,20,.4); }
   </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════
-     TOOLBAR  (feature: zoom, search, export, shortcuts…)
-═══════════════════════════════════════════════ -->
+<!-- ═══════════════════ TOOLBAR ═══════════════════ -->
 <div id="toolbar">
-  <span class="logo">🩺 medic8d</span>
+  <span class="logo">⬛ medic8d</span>
   <div class="tb-sep"></div>
 
-  <!-- Note colour picker (feature 7) -->
+  <!-- Note colour picker -->
   <div class="swatch-row">
-    <span style="font-size:.75rem;color:var(--muted)">Colour:</span>
-    <span class="swatch active" data-color="yellow"  style="background:#fffbe6" title="Yellow"></span>
-    <span class="swatch"        data-color="blue"    style="background:#e8f4fd" title="Blue"></span>
-    <span class="swatch"        data-color="green"   style="background:#e6f9ed" title="Green"></span>
-    <span class="swatch"        data-color="pink"    style="background:#fde8f2" title="Pink"></span>
-    <span class="swatch"        data-color="purple"  style="background:#f0e8fd" title="Purple"></span>
-    <span class="swatch"        data-color="orange"  style="background:#fff3e0" title="Orange"></span>
+    <span style="font-size:.7rem;color:var(--text-dim);margin-right:2px">Chalk:</span>
+    <span class="swatch active" data-color="green"  style="background:var(--neon-green)"  title="Green"></span>
+    <span class="swatch"        data-color="cyan"   style="background:var(--neon-cyan)"   title="Cyan"></span>
+    <span class="swatch"        data-color="pink"   style="background:var(--neon-pink)"   title="Pink"></span>
+    <span class="swatch"        data-color="yellow" style="background:var(--neon-yellow)" title="Yellow"></span>
+    <span class="swatch"        data-color="purple" style="background:var(--neon-purple)" title="Purple"></span>
+    <span class="swatch"        data-color="orange" style="background:var(--neon-orange)" title="Orange"></span>
   </div>
   <div class="tb-sep"></div>
 
-  <!-- Search (feature 12) -->
+  <!-- Search -->
   <input id="search-box" type="search" placeholder="🔍 search notes…" />
   <div class="tb-sep"></div>
 
-  <!-- Zoom controls (feature 9) -->
+  <!-- Zoom -->
   <button class="tb-btn" id="zoom-out" title="Zoom out (-)">−</button>
   <span id="zoom-label">100%</span>
   <button class="tb-btn" id="zoom-in"  title="Zoom in (+)">＋</button>
@@ -514,113 +458,31 @@
   <div class="tb-sep"></div>
 
   <!-- Actions -->
-  <button class="tb-btn" id="btn-export-png"  title="Export whiteboard as PNG">📷 PNG</button>
-  <button class="tb-btn" id="btn-export-json" title="Export notes as JSON">⬇ JSON</button>
-  <button class="tb-btn" id="btn-import-json" title="Import notes from JSON">⬆ Import</button>
+  <button class="tb-btn" id="btn-export-png"  title="Export as PNG">📷 PNG</button>
+  <button class="tb-btn" id="btn-export-json" title="Export JSON">⬇ JSON</button>
+  <button class="tb-btn" id="btn-import-json" title="Import JSON">⬆ Import</button>
   <input type="file" id="file-import" accept=".json" style="display:none" />
-  <button class="tb-btn" id="btn-clear" class="danger" title="Clear all notes">🗑 Clear</button>
+  <button class="tb-btn danger" id="btn-clear" title="Clear all notes">🗑 Clear</button>
   <button class="tb-btn" id="btn-undo"  title="Undo last delete (Ctrl+Z)">↩ Undo</button>
   <div class="tb-sep"></div>
   <button class="tb-btn" id="btn-shortcuts" title="Keyboard shortcuts">⌨ Keys</button>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     PROFILE CARD  (styled like a README.md)
-═══════════════════════════════════════════════ -->
-<section id="profile">
-  <div class="readme-card">
-
-    <div class="profile-header">
-      <img src="https://avatars.githubusercontent.com/medic8d?s=160"
-           alt="medic8d avatar"
-           onerror="this.src='https://github.com/identicons/medic8d.png'" />
-      <div class="bio">
-        <h1>👋 Hi, I'm medic8d</h1>
-        <div class="handle">@medic8d · github.com/medic8d</div>
-        <p>Developer · Builder · Tinkerer<br>
-           Passionate about open-source, tooling, and shipping things.</p>
-        <div class="social-links">
-          <a class="social-link" href="https://github.com/medic8d" target="_blank" rel="noopener">
-            <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.54 5.47 7.59.4.07.55-.17.55-.38
-              0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52
-              0-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89
-              -3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27
-              2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15
-              0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38
-              A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
-            GitHub
-          </a>
-          <a class="social-link" href="mailto:medic8d@users.noreply.github.com">
-            <svg viewBox="0 0 16 16"><path d="M1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25
-              14H1.75A1.75 1.75 0 0 1 0 12.25v-8.5C0 2.784.784 2 1.75 2ZM1.5 5.36v6.89c0 .138.112.25.25.25h12.5
-              a.25.25 0 0 0 .25-.25V5.36l-5.55 3.7a1.25 1.25 0 0 1-1.4 0Zm13-1.71-6.25 4.17L2 3.65v-.15a.25.25
-              0 0 1 .25-.25h11.5a.25.25 0 0 1 .25.25v.15Z"/></svg>
-            Email
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <h2>🛠 Tech Stack</h2>
-    <div class="skills-grid">
-      <span class="skill-tag">JavaScript</span>
-      <span class="skill-tag">TypeScript</span>
-      <span class="skill-tag">Python</span>
-      <span class="skill-tag">Node.js</span>
-      <span class="skill-tag">React</span>
-      <span class="skill-tag">HTML5</span>
-      <span class="skill-tag">CSS3</span>
-      <span class="skill-tag">Git</span>
-      <span class="skill-tag">Docker</span>
-      <span class="skill-tag">Linux</span>
-    </div>
-
-    <h2>📊 GitHub Stats</h2>
-    <div class="stats-row">
-      <img src="https://github-readme-stats.vercel.app/api?username=medic8d&show_icons=true&theme=default&hide_border=true&bg_color=ffffff"
-           alt="GitHub stats" loading="lazy" />
-      <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=medic8d&layout=compact&theme=default&hide_border=true&bg_color=ffffff"
-           alt="Top languages" loading="lazy" />
-    </div>
-
-    <h2>📌 Pinned</h2>
-    <div class="badge-row">
-      <a class="badge" href="https://github.com/medic8d/medic8d.github.io">
-        <span class="dot" style="background:#f1e05a"></span>
-        medic8d.github.io — Personal site &amp; whiteboard
-      </a>
-    </div>
-
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════════════
-     WHITEBOARD SECTION
-═══════════════════════════════════════════════ -->
-<section id="whiteboard-section">
-  <div class="section-header">
-    <div class="line"></div>
-    <h2>📝 WHITEBOARD</h2>
-    <div class="line"></div>
-  </div>
-  <p style="font-size:.82rem;color:var(--muted);margin-bottom:8px;text-align:center">
-    Click anywhere on the board to create a note · Double-click a note to edit · Drag to move
-  </p>
+<!-- ═══════════════════ BLACKBOARD ════════════════ -->
+<div id="board-wrap">
   <div id="wb-outer">
     <div id="wb-viewport">
       <div id="whiteboard">
         <div id="wb-hint">
-          <p>🖱 Click anywhere to add a markdown note</p>
-          <p><kbd>Del</kbd> delete selected &nbsp; <kbd>Ctrl Z</kbd> undo &nbsp; <kbd>Esc</kbd> deselect</p>
+          <p>🖊 Click anywhere to write a note</p>
+          <p><kbd>Del</kbd> delete selected &nbsp;·&nbsp; <kbd>Ctrl Z</kbd> undo &nbsp;·&nbsp; <kbd>Esc</kbd> deselect</p>
         </div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- ═══════════════════════════════════════════════
-     SHORTCUTS MODAL  (feature 13)
-═══════════════════════════════════════════════ -->
+<!-- ═══════════════════ SHORTCUTS MODAL ══════════ -->
 <div id="shortcuts-modal">
   <div class="modal-box">
     <h2>⌨ Keyboard Shortcuts</h2>
@@ -628,12 +490,12 @@
     <div class="shortcut-row"><span>Edit note</span>        <kbd>Double-click</kbd></div>
     <div class="shortcut-row"><span>Deselect</span>         <kbd>Esc</kbd></div>
     <div class="shortcut-row"><span>Delete selected</span>  <kbd>Del / Backspace</kbd></div>
-    <div class="shortcut-row"><span>Undo last delete</span> <kbd>Ctrl Z</kbd></div>
+    <div class="shortcut-row"><span>Undo delete</span>      <kbd>Ctrl Z</kbd></div>
     <div class="shortcut-row"><span>Zoom in</span>          <kbd>Ctrl +</kbd></div>
     <div class="shortcut-row"><span>Zoom out</span>         <kbd>Ctrl −</kbd></div>
     <div class="shortcut-row"><span>Reset zoom</span>       <kbd>Ctrl 0</kbd></div>
     <div class="shortcut-row"><span>Export PNG</span>       <kbd>Ctrl Shift S</kbd></div>
-    <div class="shortcut-row"><span>Shortcuts panel</span>  <kbd>?</kbd></div>
+    <div class="shortcut-row"><span>Shortcuts</span>        <kbd>?</kbd></div>
     <button class="modal-close" id="modal-close-btn">Close</button>
   </div>
 </div>
@@ -641,13 +503,7 @@
 <!-- toast -->
 <div id="toast"></div>
 
-<footer>
-  <p>Built with ❤ · <a href="https://github.com/medic8d">@medic8d</a> · <a href="https://github.com/medic8d/medic8d.github.io">View source</a></p>
-</footer>
-
-<!-- ═══════════════════════════════════════════════
-     JAVASCRIPT
-═══════════════════════════════════════════════ -->
+<!-- ═══════════════════ JAVASCRIPT ════════════════ -->
 <script>
 // ─── configure marked ───────────────────────────
 marked.setOptions({
@@ -663,33 +519,37 @@ marked.setOptions({
 
 // ─── state ──────────────────────────────────────
 const STORAGE_KEY = 'md8d_notes_v2';
-let notes        = [];          // {id, x, y, w, h, content, color, z, tag}
+let notes        = [];
 let selectedId   = null;
 let zCounter     = 10;
 let zoom         = 1;
-let undoStack    = [];          // deleted notes for undo (feature 14: undo)
-let activeColor  = 'yellow';
+let undoStack    = [];
+let activeColor  = 'green';
+
 const NOTE_COLORS = {
-  yellow: '#fffbe6', blue: '#e8f4fd', green: '#e6f9ed',
-  pink:   '#fde8f2', purple: '#f0e8fd', orange: '#fff3e0'
+  green:  '#0c1a0e',
+  cyan:   '#001a1f',
+  pink:   '#1a0010',
+  yellow: '#1a1700',
+  purple: '#120018',
+  orange: '#1a0c00'
+};
+
+const NEON_VARS = {
+  green:  'var(--neon-green)',
+  cyan:   'var(--neon-cyan)',
+  pink:   'var(--neon-pink)',
+  yellow: 'var(--neon-yellow)',
+  purple: 'var(--neon-purple)',
+  orange: 'var(--neon-orange)'
 };
 
 // ─── DOM refs ───────────────────────────────────
-const wb        = document.getElementById('whiteboard');
-const wbViewport= document.getElementById('wb-viewport');
-const hint      = document.getElementById('wb-hint');
-const searchBox = document.getElementById('search-box');
-const zoomLabel = document.getElementById('zoom-label');
-
-// ─── FEATURE 1: force light / always-white board ─
-// The CSS already sets background-color:#ffffff !important and color-scheme:light.
-// Below we also actively override any prefers-color-scheme that may affect the
-// whiteboard element via inline style so JS-applied dark themes can't override it.
-function enforceWhiteboard() {
-  wb.style.backgroundColor = '#ffffff';
-  wb.style.colorScheme = 'light';
-}
-enforceWhiteboard();
+const wb         = document.getElementById('whiteboard');
+const wbViewport = document.getElementById('wb-viewport');
+const hint       = document.getElementById('wb-hint');
+const searchBox  = document.getElementById('search-box');
+const zoomLabel  = document.getElementById('zoom-label');
 
 // ─── Toast ──────────────────────────────────────
 const toast = document.getElementById('toast');
@@ -701,7 +561,7 @@ function showToast(msg, duration = 2000) {
   toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
 }
 
-// ─── Persistence (feature 8) ────────────────────
+// ─── Persistence ────────────────────────────────
 function saveNotes() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
 }
@@ -712,28 +572,28 @@ function loadNotes() {
   } catch { notes = []; }
 }
 
-// ─── Render hint ────────────────────────────────
+// ─── Hint ───────────────────────────────────────
 function updateHint() {
   hint.style.display = notes.length === 0 ? 'block' : 'none';
 }
 
-// ─── Create a note DOM element ──────────────────
+// ─── Create note element ─────────────────────────
 function createNoteEl(note) {
   const el = document.createElement('div');
   el.className = 'note';
   el.id = 'note-' + note.id;
-  el.style.left    = note.x + 'px';
-  el.style.top     = note.y + 'px';
-  el.style.width   = note.w + 'px';
-  el.style.height  = note.h + 'px';
-  el.style.zIndex  = note.z;
-  el.style.background = NOTE_COLORS[note.color] || NOTE_COLORS.yellow;
+  el.dataset.color = note.color || 'green';
+  el.style.left   = note.x + 'px';
+  el.style.top    = note.y + 'px';
+  el.style.width  = note.w + 'px';
+  el.style.height = note.h + 'px';
+  el.style.zIndex = note.z;
 
   el.innerHTML = `
     <div class="note-bar">
-      <button class="dot-btn close"  title="Delete note" data-id="${note.id}"></button>
-      <button class="dot-btn color"  title="Change colour" data-id="${note.id}"></button>
-      <span   class="note-tag"       data-id="${note.id}">${note.tag || 'note'}</span>
+      <button class="dot-btn close" title="Delete note" data-id="${note.id}"></button>
+      <button class="dot-btn color" title="Change colour" data-id="${note.id}"></button>
+      <span class="note-tag" data-id="${note.id}">${note.tag || 'note'}</span>
     </div>
     <div class="note-body">
       <div class="note-preview"></div>
@@ -741,13 +601,11 @@ function createNoteEl(note) {
     </div>
     <div class="note-resize" data-id="${note.id}"></div>`;
 
-  const preview  = el.querySelector('.note-preview');
-  const editor   = el.querySelector('.note-editor');
+  const preview = el.querySelector('.note-preview');
+  const editor  = el.querySelector('.note-editor');
 
-  // render markdown
   renderPreview(note, preview);
 
-  // ── edit mode: double-click preview ──
   el.addEventListener('dblclick', e => {
     if (e.target.closest('.note-bar')) return;
     if (e.target.closest('.note-resize')) return;
@@ -755,7 +613,6 @@ function createNoteEl(note) {
     e.stopPropagation();
   });
 
-  // ── single click: select ──
   el.addEventListener('mousedown', e => {
     if (e.target.closest('.note-resize')) return;
     e.stopPropagation();
@@ -763,19 +620,14 @@ function createNoteEl(note) {
     makeDraggable(e, note, el);
   });
 
-  // ── close button ──
   el.querySelector('.dot-btn.close').addEventListener('click', e => {
-    e.stopPropagation();
-    deleteNote(note.id);
+    e.stopPropagation(); deleteNote(note.id);
   });
 
-  // ── colour cycle button ──
   el.querySelector('.dot-btn.color').addEventListener('click', e => {
-    e.stopPropagation();
-    cycleColor(note, el);
+    e.stopPropagation(); cycleColor(note, el);
   });
 
-  // ── tag click: rename ──
   el.querySelector('.note-tag').addEventListener('click', e => {
     e.stopPropagation();
     const newTag = prompt('Tag for this note:', note.tag || 'note');
@@ -786,10 +638,8 @@ function createNoteEl(note) {
     }
   });
 
-  // ── resize ──
   el.querySelector('.note-resize').addEventListener('mousedown', e => {
-    e.stopPropagation();
-    e.preventDefault();
+    e.stopPropagation(); e.preventDefault();
     makeResizable(e, note, el);
   });
 
@@ -797,25 +647,22 @@ function createNoteEl(note) {
   return el;
 }
 
-// ─── Render markdown preview (feature 3) ────────
+// ─── Render markdown ─────────────────────────────
 function renderPreview(note, previewEl) {
-  const raw = note.content || '*empty note — double-click to edit*';
+  const raw = note.content || '*empty — double-click to write*';
   previewEl.innerHTML = marked.parse(raw);
-  // syntax highlight code blocks
   previewEl.querySelectorAll('pre code').forEach(b => hljs.highlightElement(b));
-  // feature: task-list checkboxes
   previewEl.querySelectorAll('input[type="checkbox"]').forEach(cb => {
     cb.style.pointerEvents = 'none';
   });
 }
 
-// ─── Enter / exit edit mode (feature 4) ─────────
+// ─── Edit mode ───────────────────────────────────
 function enterEditMode(note, el, editor, preview) {
   preview.style.display = 'none';
   editor.style.display  = 'block';
   editor.value = note.content || '';
   editor.focus();
-  // auto-resize textarea
   editor.style.height = 'auto';
   editor.style.height = Math.max(editor.scrollHeight, 60) + 'px';
 
@@ -823,10 +670,10 @@ function enterEditMode(note, el, editor, preview) {
     editor.style.height = 'auto';
     editor.style.height = Math.max(editor.scrollHeight, 60) + 'px';
   };
-  editor.onblur = () => exitEditMode(note, el, editor, preview);
+  editor.onblur    = () => exitEditMode(note, el, editor, preview);
   editor.onkeydown = e => {
     if (e.key === 'Escape') editor.blur();
-    e.stopPropagation(); // don't let Esc/Del fire board shortcuts while editing
+    e.stopPropagation();
   };
 }
 
@@ -836,7 +683,6 @@ function exitEditMode(note, el, editor, preview) {
   preview.style.display = 'block';
   editor.style.display  = 'none';
   saveNotes();
-  // filter to re-apply search dim
   applySearch(searchBox.value.trim().toLowerCase());
 }
 
@@ -859,22 +705,17 @@ function selectNote(id) {
   }
 }
 
-// ─── Drag-to-move (feature 2) ───────────────────
+// ─── Drag-to-move ────────────────────────────────
 function makeDraggable(e, note, el) {
-  // Only drag from the note-bar or the note itself (not resize)
   if (e.target.closest('.dot-btn') || e.target.closest('.note-tag')) return;
   if (!e.target.closest('.note-bar') && e.target !== el) return;
 
-  const startX = e.clientX;
-  const startY = e.clientY;
-  const origX  = note.x;
-  const origY  = note.y;
+  const startX = e.clientX, startY = e.clientY;
+  const origX  = note.x,    origY  = note.y;
 
   function onMove(ev) {
-    const dx = (ev.clientX - startX) / zoom;
-    const dy = (ev.clientY - startY) / zoom;
-    note.x = Math.max(0, origX + dx);
-    note.y = Math.max(0, origY + dy);
+    note.x = Math.max(0, origX + (ev.clientX - startX) / zoom);
+    note.y = Math.max(0, origY + (ev.clientY - startY) / zoom);
     el.style.left = note.x + 'px';
     el.style.top  = note.y + 'px';
   }
@@ -887,18 +728,14 @@ function makeDraggable(e, note, el) {
   document.addEventListener('mouseup', onUp);
 }
 
-// ─── Resize (feature 6) ─────────────────────────
+// ─── Resize ──────────────────────────────────────
 function makeResizable(e, note, el) {
-  const startX = e.clientX;
-  const startY = e.clientY;
-  const origW  = note.w;
-  const origH  = note.h;
+  const startX = e.clientX, startY = e.clientY;
+  const origW  = note.w,    origH  = note.h;
 
   function onMove(ev) {
-    const dw = (ev.clientX - startX) / zoom;
-    const dh = (ev.clientY - startY) / zoom;
-    note.w = Math.max(160, origW + dw);
-    note.h = Math.max(80,  origH + dh);
+    note.w = Math.max(160, origW + (ev.clientX - startX) / zoom);
+    note.h = Math.max(80,  origH + (ev.clientY - startY) / zoom);
     el.style.width  = note.w + 'px';
     el.style.height = note.h + 'px';
   }
@@ -911,16 +748,16 @@ function makeResizable(e, note, el) {
   document.addEventListener('mouseup', onUp);
 }
 
-// ─── Colour cycle (feature 7) ───────────────────
+// ─── Colour cycle ────────────────────────────────
 const colorKeys = Object.keys(NOTE_COLORS);
 function cycleColor(note, el) {
   const idx = colorKeys.indexOf(note.color);
   note.color = colorKeys[(idx + 1) % colorKeys.length];
-  el.style.background = NOTE_COLORS[note.color];
+  el.dataset.color = note.color;
   saveNotes();
 }
 
-// ─── Delete + undo (feature 14) ─────────────────
+// ─── Delete + undo ───────────────────────────────
 function deleteNote(id) {
   const idx = notes.findIndex(n => n.id === id);
   if (idx === -1) return;
@@ -929,8 +766,7 @@ function deleteNote(id) {
   const el = document.getElementById('note-' + id);
   if (el) el.remove();
   if (selectedId === id) selectedId = null;
-  saveNotes();
-  updateHint();
+  saveNotes(); updateHint();
   showToast('Note deleted · Ctrl+Z to undo');
 }
 
@@ -939,14 +775,13 @@ function undoDelete() {
   const { note } = undoStack.pop();
   notes.push(note);
   createNoteEl(note);
-  saveNotes();
-  updateHint();
+  saveNotes(); updateHint();
   showToast('Undo: note restored');
 }
 
-// ─── FEATURE 1: Click whiteboard to add note ────
+// ─── Click board → add note ──────────────────────
 wb.addEventListener('click', e => {
-  if (e.target !== wb) return;           // only naked board clicks
+  if (e.target !== wb) return;
   const rect = wb.getBoundingClientRect();
   const x = (e.clientX - rect.left) / zoom;
   const y = (e.clientY - rect.top)  / zoom;
@@ -959,22 +794,18 @@ wb.addEventListener('click', e => {
   };
   notes.push(note);
   const el = createNoteEl(note);
-  saveNotes();
-  updateHint();
-  selectNote(id);
+  saveNotes(); updateHint(); selectNote(id);
 
-  // immediately open editor
   const editor  = el.querySelector('.note-editor');
   const preview = el.querySelector('.note-preview');
   enterEditMode(note, el, editor, preview);
 });
 
-// ─── Deselect on board click (not on a note) ────
 wb.addEventListener('mousedown', e => {
   if (e.target === wb) selectNote(null);
 });
 
-// ─── FEATURE 9: Zoom ────────────────────────────
+// ─── Zoom ────────────────────────────────────────
 function setZoom(z) {
   zoom = Math.min(3, Math.max(0.25, z));
   wb.style.transform = `scale(${zoom})`;
@@ -985,29 +816,27 @@ document.getElementById('zoom-in').onclick    = () => setZoom(zoom + 0.1);
 document.getElementById('zoom-out').onclick   = () => setZoom(zoom - 0.1);
 document.getElementById('zoom-reset').onclick = () => setZoom(1);
 
-// ─── FEATURE 10: Export PNG ─────────────────────
+// ─── Export PNG ──────────────────────────────────
 document.getElementById('btn-export-png').onclick = async () => {
   showToast('Rendering PNG…', 3000);
   try {
     const canvas = await html2canvas(wb, {
-      backgroundColor: '#ffffff',
-      scale: 1,
-      useCORS: true
+      backgroundColor: '#0f1f14', scale: 1, useCORS: true
     });
     const link = document.createElement('a');
-    link.download = 'whiteboard.png';
+    link.download = 'blackboard.png';
     link.href = canvas.toDataURL('image/png');
     link.click();
     showToast('PNG downloaded ✓');
   } catch { showToast('Export failed — try a different browser'); }
 };
 
-// ─── FEATURE 11: Export / Import JSON ──────────
+// ─── Export / Import JSON ────────────────────────
 document.getElementById('btn-export-json').onclick = () => {
   const blob = new Blob([JSON.stringify(notes, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'whiteboard-notes.json';
+  a.download = 'blackboard-notes.json';
   a.click();
   showToast('JSON exported ✓');
 };
@@ -1025,12 +854,10 @@ document.getElementById('file-import').onchange = e => {
       if (!Array.isArray(imported)) throw new Error();
       imported.forEach(n => {
         if (!notes.find(x => x.id === n.id)) {
-          notes.push(n);
-          createNoteEl(n);
+          notes.push(n); createNoteEl(n);
         }
       });
-      saveNotes();
-      updateHint();
+      saveNotes(); updateHint();
       showToast(`Imported ${imported.length} note(s) ✓`);
     } catch { showToast('Invalid JSON file'); }
   };
@@ -1038,24 +865,21 @@ document.getElementById('file-import').onchange = e => {
   e.target.value = '';
 };
 
-// ─── Clear all ──────────────────────────────────
+// ─── Clear all ───────────────────────────────────
 document.getElementById('btn-clear').onclick = () => {
   if (!notes.length) { showToast('Board is empty'); return; }
-  if (!confirm('Delete all notes?')) return;
-  // save all to undoStack as a batch (we push them one by one so multi-undo works)
+  if (!confirm('Erase all notes?')) return;
   [...notes].reverse().forEach((n, i) => undoStack.push({ note: { ...n }, idx: i }));
   notes = [];
   wb.querySelectorAll('.note').forEach(el => el.remove());
   selectedId = null;
-  saveNotes();
-  updateHint();
+  saveNotes(); updateHint();
   showToast('Board cleared · Ctrl+Z to undo last');
 };
 
-// ─── Undo button ────────────────────────────────
 document.getElementById('btn-undo').onclick = undoDelete;
 
-// ─── FEATURE 12: Search notes ───────────────────
+// ─── Search ──────────────────────────────────────
 function applySearch(query) {
   notes.forEach(note => {
     const el = document.getElementById('note-' + note.id);
@@ -1065,12 +889,11 @@ function applySearch(query) {
     el.classList.toggle('dimmed', !text.includes(query));
   });
 }
-
 searchBox.addEventListener('input', () =>
   applySearch(searchBox.value.trim().toLowerCase())
 );
 
-// ─── FEATURE 13: Keyboard shortcuts ─────────────
+// ─── Shortcuts modal ────────────────────────────
 document.getElementById('btn-shortcuts').onclick = () =>
   document.getElementById('shortcuts-modal').classList.add('open');
 document.getElementById('modal-close-btn').onclick = () =>
@@ -1080,8 +903,8 @@ document.getElementById('shortcuts-modal').onclick = e => {
     document.getElementById('shortcuts-modal').classList.remove('open');
 };
 
+// ─── Keyboard shortcuts ──────────────────────────
 document.addEventListener('keydown', e => {
-  // don't fire when typing in an input or editor
   const tag = document.activeElement.tagName;
   if (tag === 'INPUT' || tag === 'TEXTAREA') return;
 
@@ -1102,15 +925,14 @@ document.addEventListener('keydown', e => {
     e.preventDefault(); setZoom(1);
   }
   if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 's') {
-    e.preventDefault();
-    document.getElementById('btn-export-png').click();
+    e.preventDefault(); document.getElementById('btn-export-png').click();
   }
   if (e.key === '?') {
     document.getElementById('shortcuts-modal').classList.toggle('open');
   }
 });
 
-// ─── FEATURE 7: Colour picker swatches ──────────
+// ─── Colour swatches ────────────────────────────
 document.querySelectorAll('.swatch').forEach(sw => {
   sw.addEventListener('click', () => {
     document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
@@ -1119,15 +941,25 @@ document.querySelectorAll('.swatch').forEach(sw => {
   });
 });
 
-// ─── FEATURE 15: Scroll-wheel zoom on viewport ──
+// ─── Scroll-wheel zoom ───────────────────────────
 wbViewport.addEventListener('wheel', e => {
   if (!(e.ctrlKey || e.metaKey)) return;
   e.preventDefault();
   setZoom(zoom + (e.deltaY < 0 ? 0.05 : -0.05));
 }, { passive: false });
 
-// ─── Boot: load persisted notes ─────────────────
+// ─── Migrate old notes: remap legacy colour names ─
+function migrateColors(notesArr) {
+  const remap = { blue: 'cyan' };
+  notesArr.forEach(n => {
+    if (remap[n.color]) n.color = remap[n.color];
+    if (!NOTE_COLORS[n.color]) n.color = 'green';
+  });
+}
+
+// ─── Boot ────────────────────────────────────────
 loadNotes();
+migrateColors(notes);
 notes.forEach(createNoteEl);
 updateHint();
 </script>
