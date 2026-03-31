@@ -18,20 +18,20 @@
     /* ── NEON PALETTE ── */
     :root {
       --bg:            #0a0a0a;
-      --board-bg:      #0f1f14;
-      --board-border:  #1e3d28;
+      --board-bg:      #0a100a;
+      --board-border:  #1a2a1a;
       --board-radius:  22px;
-      --board-glow:    0 0 60px rgba(57,255,20,.08), 0 0 120px rgba(57,255,20,.04);
+      --board-glow:    0 0 60px rgba(173,255,2,.08), 0 0 120px rgba(173,255,2,.04);
 
       --toolbar-bg:    #111111;
       --toolbar-border:#1e1e1e;
 
-      --neon-green:  #39ff14;
-      --neon-cyan:   #00f5ff;
-      --neon-pink:   #ff2d78;
-      --neon-yellow: #ffe600;
-      --neon-purple: #c300ff;
-      --neon-orange: #ff6a00;
+      --slime-lime:       #adff02;
+      --deep-sky-blue:    #01befe;
+      --neon-pink:        #ff006d;
+      --bright-gold:      #ffdd00;
+      --violet-ray:       #8f00ff;
+      --vivid-tangerine:  #ff7d00;
 
       --text-dim:    rgba(255,255,255,.35);
       --text-muted:  rgba(255,255,255,.55);
@@ -72,8 +72,8 @@
       font-weight: 800;
       font-size: .95rem;
       letter-spacing: .06em;
-      color: var(--neon-green);
-      text-shadow: 0 0 12px var(--neon-green);
+      color: var(--slime-lime);
+      text-shadow: 0 0 12px var(--slime-lime);
       margin-right: 6px;
       white-space: nowrap;
     }
@@ -95,14 +95,19 @@
       white-space: nowrap;
     }
     .tb-btn:hover {
-      color: var(--neon-green);
-      border-color: var(--neon-green);
-      text-shadow: 0 0 8px var(--neon-green);
+      color: var(--slime-lime);
+      border-color: var(--slime-lime);
+      text-shadow: 0 0 8px var(--slime-lime);
     }
     .tb-btn.danger:hover {
       color: var(--neon-pink);
       border-color: var(--neon-pink);
       text-shadow: 0 0 8px var(--neon-pink);
+    }
+    .tb-btn.active-mode {
+      color: var(--slime-lime);
+      border-color: var(--slime-lime);
+      text-shadow: 0 0 8px var(--slime-lime);
     }
 
     /* colour swatches */
@@ -130,7 +135,7 @@
       outline: none;
       transition: border-color .15s;
     }
-    #search-box:focus { border-color: var(--neon-cyan); }
+    #search-box:focus { border-color: var(--deep-sky-blue); }
     #search-box::placeholder { color: var(--text-dim); }
 
     #zoom-label {
@@ -194,17 +199,17 @@
     #wb-hint p {
       font-size: 1rem;
       margin-bottom: 8px;
-      color: rgba(57,255,20,.4);
-      text-shadow: 0 0 14px rgba(57,255,20,.5);
+      color: rgba(173,255,2,.4);
+      text-shadow: 0 0 14px rgba(173,255,2,.5);
       letter-spacing: .03em;
     }
     #wb-hint kbd {
-      background: rgba(57,255,20,.06);
-      border: 1px solid rgba(57,255,20,.2);
+      background: rgba(173,255,2,.06);
+      border: 1px solid rgba(173,255,2,.2);
       border-radius: 5px;
       padding: 2px 7px;
       font-size: .75rem;
-      color: rgba(57,255,20,.55);
+      color: rgba(173,255,2,.55);
     }
 
     /* ── NOTES ── */
@@ -214,22 +219,22 @@
       min-height: 80px;
       width: 260px;
       background: #0c1a0e;
-      border: 1.5px solid var(--neon-green);
+      border: 1.5px solid var(--slime-lime);
       border-radius: 12px;
-      box-shadow: 0 0 18px rgba(57,255,20,.18), inset 0 0 20px rgba(0,0,0,.3);
+      box-shadow: 0 0 18px rgba(173,255,2,.18), inset 0 0 20px rgba(0,0,0,.3);
       display: flex;
       flex-direction: column;
       font-size: .85rem;
       transition: box-shadow .15s, border-color .15s;
       user-select: none;
-      color: var(--neon-green);
+      color: var(--slime-lime);
     }
     /* per-colour note tints */
-    .note[data-color="yellow"] { border-color: var(--neon-yellow); box-shadow: 0 0 18px rgba(255,230,0,.18), inset 0 0 20px rgba(0,0,0,.3); color: var(--neon-yellow); background: #1a1700; }
-    .note[data-color="cyan"]   { border-color: var(--neon-cyan);   box-shadow: 0 0 18px rgba(0,245,255,.18), inset 0 0 20px rgba(0,0,0,.3); color: var(--neon-cyan);   background: #001a1f; }
-    .note[data-color="pink"]   { border-color: var(--neon-pink);   box-shadow: 0 0 18px rgba(255,45,120,.18), inset 0 0 20px rgba(0,0,0,.3); color: var(--neon-pink);   background: #1a0010; }
-    .note[data-color="purple"] { border-color: var(--neon-purple); box-shadow: 0 0 18px rgba(195,0,255,.18), inset 0 0 20px rgba(0,0,0,.3); color: var(--neon-purple); background: #120018; }
-    .note[data-color="orange"] { border-color: var(--neon-orange); box-shadow: 0 0 18px rgba(255,106,0,.18), inset 0 0 20px rgba(0,0,0,.3); color: var(--neon-orange); background: #1a0c00; }
+    .note[data-color="yellow"] { border-color: var(--bright-gold);       box-shadow: 0 0 18px rgba(255,221,0,.18),  inset 0 0 20px rgba(0,0,0,.3); color: var(--bright-gold);      background: #1a1700; }
+    .note[data-color="cyan"]   { border-color: var(--deep-sky-blue);     box-shadow: 0 0 18px rgba(1,190,254,.18),  inset 0 0 20px rgba(0,0,0,.3); color: var(--deep-sky-blue);    background: #001a1f; }
+    .note[data-color="pink"]   { border-color: var(--neon-pink);         box-shadow: 0 0 18px rgba(255,0,109,.18),  inset 0 0 20px rgba(0,0,0,.3); color: var(--neon-pink);        background: #1a0010; }
+    .note[data-color="purple"] { border-color: var(--violet-ray);        box-shadow: 0 0 18px rgba(143,0,255,.18),  inset 0 0 20px rgba(0,0,0,.3); color: var(--violet-ray);       background: #120018; }
+    .note[data-color="orange"] { border-color: var(--vivid-tangerine);   box-shadow: 0 0 18px rgba(255,125,0,.18),  inset 0 0 20px rgba(0,0,0,.3); color: var(--vivid-tangerine);  background: #1a0c00; }
 
     .note.selected {
       box-shadow:
@@ -362,7 +367,7 @@
       background: #141414;
       border-radius: 14px;
       border: 1px solid var(--board-border);
-      box-shadow: 0 0 40px rgba(57,255,20,.12);
+      box-shadow: 0 0 40px rgba(173,255,2,.12);
       padding: 24px 28px;
       min-width: 320px;
       max-width: 460px;
@@ -370,8 +375,8 @@
     .modal-box h2 {
       font-size: 1rem;
       margin-bottom: 14px;
-      color: var(--neon-green);
-      text-shadow: 0 0 10px var(--neon-green);
+      color: var(--slime-lime);
+      text-shadow: 0 0 10px var(--slime-lime);
     }
     .shortcut-row {
       display: flex; justify-content: space-between;
@@ -398,7 +403,7 @@
       font-size: .85rem;
       transition: color .15s, border-color .15s;
     }
-    .modal-close:hover { color: var(--neon-green); border-color: var(--neon-green); }
+    .modal-close:hover { color: var(--slime-lime); border-color: var(--slime-lime); }
 
     /* ── TOAST ── */
     #toast {
@@ -406,10 +411,10 @@
       bottom: 24px; left: 50%;
       transform: translateX(-50%) translateY(60px);
       background: #111;
-      border: 1px solid var(--neon-green);
-      color: var(--neon-green);
-      text-shadow: 0 0 8px var(--neon-green);
-      box-shadow: 0 0 20px rgba(57,255,20,.25);
+      border: 1px solid var(--slime-lime);
+      color: var(--slime-lime);
+      text-shadow: 0 0 8px var(--slime-lime);
+      box-shadow: 0 0 20px rgba(173,255,2,.25);
       padding: 8px 20px;
       border-radius: 20px;
       font-size: .82rem;
@@ -423,8 +428,31 @@
     /* ── SCROLLBAR STYLING ── */
     #wb-viewport::-webkit-scrollbar { width: 6px; height: 6px; }
     #wb-viewport::-webkit-scrollbar-track { background: transparent; }
-    #wb-viewport::-webkit-scrollbar-thumb { background: rgba(57,255,20,.2); border-radius: 3px; }
-    #wb-viewport::-webkit-scrollbar-thumb:hover { background: rgba(57,255,20,.4); }
+    #wb-viewport::-webkit-scrollbar-thumb { background: rgba(173,255,2,.2); border-radius: 3px; }
+    #wb-viewport::-webkit-scrollbar-thumb:hover { background: rgba(173,255,2,.4); }
+
+    /* ── DRAW CANVAS ── */
+    #draw-canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 2400px; height: 1800px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    #draw-canvas.draw-active { pointer-events: auto; cursor: crosshair; }
+
+    /* draw mode brush size */
+    #brush-size {
+      width: 70px;
+      cursor: pointer;
+      accent-color: var(--slime-lime);
+    }
+    #brush-label {
+      font-size: .75rem;
+      color: var(--text-muted);
+      min-width: 20px;
+      text-align: right;
+    }
   </style>
 </head>
 <body>
@@ -437,13 +465,22 @@
   <!-- Note colour picker -->
   <div class="swatch-row">
     <span style="font-size:.7rem;color:var(--text-dim);margin-right:2px">Chalk:</span>
-    <span class="swatch active" data-color="green"  style="background:var(--neon-green)"  title="Green"></span>
-    <span class="swatch"        data-color="cyan"   style="background:var(--neon-cyan)"   title="Cyan"></span>
-    <span class="swatch"        data-color="pink"   style="background:var(--neon-pink)"   title="Pink"></span>
-    <span class="swatch"        data-color="yellow" style="background:var(--neon-yellow)" title="Yellow"></span>
-    <span class="swatch"        data-color="purple" style="background:var(--neon-purple)" title="Purple"></span>
-    <span class="swatch"        data-color="orange" style="background:var(--neon-orange)" title="Orange"></span>
+    <span class="swatch active" data-color="green"  style="background:var(--slime-lime)"      title="Slime Lime"></span>
+    <span class="swatch"        data-color="cyan"   style="background:var(--deep-sky-blue)"   title="Deep Sky Blue"></span>
+    <span class="swatch"        data-color="pink"   style="background:var(--neon-pink)"        title="Neon Pink"></span>
+    <span class="swatch"        data-color="yellow" style="background:var(--bright-gold)"      title="Bright Gold"></span>
+    <span class="swatch"        data-color="purple" style="background:var(--violet-ray)"       title="Violet Ray"></span>
+    <span class="swatch"        data-color="orange" style="background:var(--vivid-tangerine)"  title="Vivid Tangerine"></span>
   </div>
+  <div class="tb-sep"></div>
+
+  <!-- Draw mode -->
+  <button class="tb-btn" id="btn-draw-mode" title="Toggle free-form drawing (D)">✏ Draw</button>
+  <label style="font-size:.7rem;color:var(--text-dim);display:flex;align-items:center;gap:4px">
+    <input type="range" id="brush-size" min="1" max="30" value="4" />
+    <span id="brush-label">4px</span>
+  </label>
+  <button class="tb-btn danger" id="btn-clear-draw" title="Clear drawing">🧹 Erase</button>
   <div class="tb-sep"></div>
 
   <!-- Search -->
@@ -473,6 +510,7 @@
   <div id="wb-outer">
     <div id="wb-viewport">
       <div id="whiteboard">
+        <canvas id="draw-canvas" width="2400" height="1800"></canvas>
         <div id="wb-hint">
           <p>🖊 Click anywhere to write a note</p>
           <p><kbd>Del</kbd> delete selected &nbsp;·&nbsp; <kbd>Ctrl Z</kbd> undo &nbsp;·&nbsp; <kbd>Esc</kbd> deselect</p>
@@ -488,6 +526,7 @@
     <h2>⌨ Keyboard Shortcuts</h2>
     <div class="shortcut-row"><span>Add note</span>         <kbd>Click</kbd></div>
     <div class="shortcut-row"><span>Edit note</span>        <kbd>Double-click</kbd></div>
+    <div class="shortcut-row"><span>Toggle draw mode</span> <kbd>D</kbd></div>
     <div class="shortcut-row"><span>Deselect</span>         <kbd>Esc</kbd></div>
     <div class="shortcut-row"><span>Delete selected</span>  <kbd>Del / Backspace</kbd></div>
     <div class="shortcut-row"><span>Undo delete</span>      <kbd>Ctrl Z</kbd></div>
@@ -536,13 +575,34 @@ const NOTE_COLORS = {
 };
 
 const NEON_VARS = {
-  green:  'var(--neon-green)',
-  cyan:   'var(--neon-cyan)',
+  green:  'var(--slime-lime)',
+  cyan:   'var(--deep-sky-blue)',
   pink:   'var(--neon-pink)',
-  yellow: 'var(--neon-yellow)',
-  purple: 'var(--neon-purple)',
-  orange: 'var(--neon-orange)'
+  yellow: 'var(--bright-gold)',
+  purple: 'var(--violet-ray)',
+  orange: 'var(--vivid-tangerine)'
 };
+
+// resolved hex values for drawing canvas strokes
+const DRAW_COLORS = {
+  green:  '#adff02',
+  cyan:   '#01befe',
+  pink:   '#ff006d',
+  yellow: '#ffdd00',
+  purple: '#8f00ff',
+  orange: '#ff7d00'
+};
+
+// ─── Draw mode state ────────────────────────────
+const DRAW_STORAGE_KEY = 'md8d_drawing_v1';
+let drawMode    = false;
+let isDrawing   = false;
+let brushSize   = 4;
+let drawStrokes = []; // [{color, size, points:[{x,y}]}]
+let currentStroke = null;
+
+const drawCanvas = document.getElementById('draw-canvas');
+const drawCtx    = drawCanvas.getContext('2d');
 
 // ─── DOM refs ───────────────────────────────────
 const wb         = document.getElementById('whiteboard');
@@ -781,7 +841,8 @@ function undoDelete() {
 
 // ─── Click board → add note ──────────────────────
 wb.addEventListener('click', e => {
-  if (e.target !== wb) return;
+  if (drawMode) return;                // in draw mode, don't create notes
+  if (e.target !== wb && e.target !== drawCanvas) return;
   const rect = wb.getBoundingClientRect();
   const x = (e.clientX - rect.left) / zoom;
   const y = (e.clientY - rect.top)  / zoom;
@@ -802,7 +863,7 @@ wb.addEventListener('click', e => {
 });
 
 wb.addEventListener('mousedown', e => {
-  if (e.target === wb) selectNote(null);
+  if (e.target === wb || e.target === drawCanvas) selectNote(null);
 });
 
 // ─── Zoom ────────────────────────────────────────
@@ -930,6 +991,9 @@ document.addEventListener('keydown', e => {
   if (e.key === '?') {
     document.getElementById('shortcuts-modal').classList.toggle('open');
   }
+  if (e.key.toLowerCase() === 'd') {
+    toggleDrawMode();
+  }
 });
 
 // ─── Colour swatches ────────────────────────────
@@ -957,11 +1021,143 @@ function migrateColors(notesArr) {
   });
 }
 
+// ─── Drawing ─────────────────────────────────────
+function redrawCanvas() {
+  drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+  drawStrokes.forEach(stroke => renderStroke(stroke));
+}
+
+function renderStroke(stroke) {
+  drawCtx.save();
+  drawCtx.strokeStyle = stroke.color;
+  drawCtx.fillStyle   = stroke.color;
+  drawCtx.lineWidth   = stroke.size;
+  drawCtx.lineCap     = 'round';
+  drawCtx.lineJoin    = 'round';
+  if (stroke.points.length === 1) {
+    // single tap → dot
+    drawCtx.beginPath();
+    drawCtx.arc(stroke.points[0].x, stroke.points[0].y, stroke.size / 2, 0, Math.PI * 2);
+    drawCtx.fill();
+  } else {
+    drawCtx.beginPath();
+    drawCtx.moveTo(stroke.points[0].x, stroke.points[0].y);
+    for (let i = 1; i < stroke.points.length; i++) {
+      drawCtx.lineTo(stroke.points[i].x, stroke.points[i].y);
+    }
+    drawCtx.stroke();
+  }
+  drawCtx.restore();
+}
+
+function saveDrawing() {
+  try {
+    localStorage.setItem(DRAW_STORAGE_KEY, JSON.stringify(drawStrokes));
+  } catch { showToast('Drawing too large to save'); }
+}
+
+function loadDrawing() {
+  try {
+    const raw = localStorage.getItem(DRAW_STORAGE_KEY);
+    if (raw) { drawStrokes = JSON.parse(raw); }
+  } catch { drawStrokes = []; }
+}
+
+function getCanvasPos(e) {
+  const rect = drawCanvas.getBoundingClientRect();
+  return {
+    x: (e.clientX - rect.left) / zoom,
+    y: (e.clientY - rect.top)  / zoom
+  };
+}
+
+drawCanvas.addEventListener('mousedown', e => {
+  if (!drawMode) return;
+  e.preventDefault();
+  isDrawing = true;
+  selectNote(null);
+  const pos = getCanvasPos(e);
+  currentStroke = { color: DRAW_COLORS[activeColor], size: brushSize, points: [pos] };
+  drawStrokes.push(currentStroke);
+  // draw a dot for single clicks
+  drawCtx.save();
+  drawCtx.fillStyle = currentStroke.color;
+  drawCtx.beginPath();
+  drawCtx.arc(pos.x, pos.y, currentStroke.size / 2, 0, Math.PI * 2);
+  drawCtx.fill();
+  drawCtx.restore();
+});
+
+drawCanvas.addEventListener('mousemove', e => {
+  if (!drawMode || !isDrawing || !currentStroke) return;
+  const pos = getCanvasPos(e);
+  currentStroke.points.push(pos);
+  // draw only the latest segment for performance
+  const pts = currentStroke.points;
+  if (pts.length < 2) return;
+  drawCtx.save();
+  drawCtx.strokeStyle = currentStroke.color;
+  drawCtx.lineWidth   = currentStroke.size;
+  drawCtx.lineCap     = 'round';
+  drawCtx.lineJoin    = 'round';
+  drawCtx.beginPath();
+  const pts = currentStroke.points;
+  drawCtx.moveTo(pts[pts.length - 2].x, pts[pts.length - 2].y);
+  drawCtx.lineTo(pos.x, pos.y);
+  drawCtx.stroke();
+  drawCtx.restore();
+});
+
+document.addEventListener('mouseup', e => {
+  if (!drawMode || !isDrawing) return;
+  isDrawing = false;
+  currentStroke = null;
+  saveDrawing();
+});
+
+function toggleDrawMode() {
+  drawMode = !drawMode;
+  const btn = document.getElementById('btn-draw-mode');
+  if (drawMode) {
+    drawCanvas.classList.add('draw-active');
+    wb.style.cursor = 'default';
+    btn.classList.add('active-mode');
+    btn.textContent = '✏ Drawing';
+    showToast('Draw mode ON — drag to draw');
+  } else {
+    drawCanvas.classList.remove('draw-active');
+    wb.style.cursor = 'crosshair';
+    btn.classList.remove('active-mode');
+    btn.textContent = '✏ Draw';
+    showToast('Draw mode OFF');
+  }
+}
+
+document.getElementById('btn-draw-mode').onclick = toggleDrawMode;
+
+document.getElementById('btn-clear-draw').onclick = () => {
+  if (!drawStrokes.length) { showToast('Nothing to erase'); return; }
+  if (!confirm('Erase all drawing?')) return;
+  drawStrokes = [];
+  drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+  saveDrawing();
+  showToast('Drawing erased');
+};
+
+const brushSlider = document.getElementById('brush-size');
+const brushLabelEl = document.getElementById('brush-label');
+brushSlider.oninput = () => {
+  brushSize = parseInt(brushSlider.value, 10);
+  brushLabelEl.textContent = brushSize + 'px';
+};
+
 // ─── Boot ────────────────────────────────────────
 loadNotes();
 migrateColors(notes);
 notes.forEach(createNoteEl);
 updateHint();
+loadDrawing();
+redrawCanvas();
 </script>
 </body>
 </html>
